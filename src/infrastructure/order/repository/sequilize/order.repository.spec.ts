@@ -66,11 +66,19 @@ describe("Order repository test", () => {
 
     const orderRepository = new OrderRepository();
     const customerRepository = new CustomerRepository();
+    const productRepository = new ProductRepository();
     const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
     const newCustomer = new Customer("321", "New Customer");
     newCustomer.changeAddress(address)
+
     await customerRepository.create(newCustomer);
     order.changeCustomerId(newCustomer.id)
+
+    const newProduct = new Product('1234567', "New Product", 200);
+    await productRepository.create(newProduct);
+    const newOrderItem = new OrderItem(`${order.id}_1`, newProduct.name, newProduct.price, newProduct.id, 2);
+    order.changeItems([newOrderItem]);
+
     await orderRepository.update(order);
 
     const orderModel = await OrderModel.findOne({
