@@ -4,21 +4,20 @@ import { Mediator } from "../../@shared/service/mediator";
 import Customer from "../entity/customer";
 import {v4 as uuid} from 'uuid'
 
-
-export class CustomerService{
+export class CustomerService {
 
     constructor(
-        private customerRepo: CustomerRepository, 
+        private customerRepo: CustomerRepository,
         private mediator: Mediator,
         private transaction: TransactionInterface
-        ){}
+    ){}
 
     async create(name: string){
         const customer = Customer.create(uuid(), name);
         this.transaction.do(async (transaction) => {
             this.customerRepo.setTransaction(transaction)
             await this.customerRepo.create(customer);
-            await this.mediator.publish(customer); 
+            await this.mediator.publish(customer);
         })
         return customer;
     }

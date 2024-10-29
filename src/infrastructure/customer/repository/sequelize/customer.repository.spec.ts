@@ -3,6 +3,7 @@ import Customer from "../../../../domain/customer/entity/customer";
 import Address from "../../../../domain/customer/value-object/address";
 import CustomerModel from "./customer.model";
 import CustomerRepository from "./customer.repository";
+import {TransactionSequelize} from "../../../transaction-sequelize";
 
 describe("Customer repository test", () => {
   let sequelize: Sequelize;
@@ -25,6 +26,7 @@ describe("Customer repository test", () => {
 
   it("should create a customer", async () => {
     const customerRepository = new CustomerRepository();
+    customerRepository.setTransaction(new TransactionSequelize(null, sequelize));
     const customer = new Customer("123", "Customer 1");
     const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
     customer.Address = address;
@@ -46,6 +48,7 @@ describe("Customer repository test", () => {
 
   it("should update a customer", async () => {
     const customerRepository = new CustomerRepository();
+    customerRepository.setTransaction(new TransactionSequelize(null, sequelize));
     const customer = new Customer("123", "Customer 1");
     const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
     customer.Address = address;
@@ -69,6 +72,7 @@ describe("Customer repository test", () => {
 
   it("should find a customer", async () => {
     const customerRepository = new CustomerRepository();
+    customerRepository.setTransaction(new TransactionSequelize(null, sequelize));
     const customer = new Customer("123", "Customer 1");
     const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
     customer.Address = address;
@@ -81,6 +85,7 @@ describe("Customer repository test", () => {
 
   it("should throw an error when customer is not found", async () => {
     const customerRepository = new CustomerRepository();
+    customerRepository.setTransaction(new TransactionSequelize(null, sequelize));
 
     expect(async () => {
       await customerRepository.find("456ABC");
@@ -89,6 +94,7 @@ describe("Customer repository test", () => {
 
   it("should find all customers", async () => {
     const customerRepository = new CustomerRepository();
+    customerRepository.setTransaction(new TransactionSequelize(null, sequelize));
     const customer1 = new Customer("123", "Customer 1");
     const address1 = new Address("Street 1", 1, "Zipcode 1", "City 1");
     customer1.Address = address1;

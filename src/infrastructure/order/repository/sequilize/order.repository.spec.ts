@@ -11,6 +11,7 @@ import ProductRepository from "../../../product/repository/sequelize/product.rep
 import OrderItemModel from "./order-item.model";
 import OrderModel from "./order.model";
 import OrderRepository from "./order.repository";
+import {TransactionSequelize} from "../../../transaction-sequelize";
 
 describe("Order repository test", () => {
   let sequelize: Sequelize;
@@ -37,7 +38,7 @@ describe("Order repository test", () => {
   });
 
   it("should create a new order", async () => {
-    const order = await createOrder("123");
+    const order = await createOrder("123", sequelize);
 
     const orderModel = await OrderModel.findOne({
       where: { id: order.id },
@@ -62,10 +63,11 @@ describe("Order repository test", () => {
   });
 
   it("should update a order", async () => {
-    const order = await createOrder("123");
+    const order = await createOrder("123", sequelize);
 
     const orderRepository = new OrderRepository();
     const customerRepository = new CustomerRepository();
+    customerRepository.setTransaction(new TransactionSequelize(null, sequelize));
     const productRepository = new ProductRepository();
     const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
     const newCustomer = new Customer("321", "New Customer");
@@ -105,7 +107,7 @@ describe("Order repository test", () => {
   it("should find a order", async () => {
     const orderRepository = new OrderRepository();
 
-    const order = await createOrder("123");
+    const order = await createOrder("123", sequelize);
 
     const orderResult = await orderRepository.find(order.id);
 
@@ -121,8 +123,8 @@ describe("Order repository test", () => {
   });
 
   it("should find all orders", async () => {
-    const order1 = await createOrder("123");
-    const order2 = await createOrder("124");
+    const order1 = await createOrder("123", sequelize);
+    const order2 = await createOrder("124", sequelize);
 
     const orders = await new OrderRepository().findAll();
 
@@ -132,8 +134,9 @@ describe("Order repository test", () => {
   });
 });
 
-async function createOrder(orderId: string) {
+async function createOrder(orderId: string, sequelize: Sequelize) {
   const customerRepository = new CustomerRepository();
+  customerRepository.setTransaction(new TransactionSequelize(null, sequelize));
   const customer = new Customer(`${orderId}_123`, "Customer 1");
   const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
   customer.changeAddress(address);

@@ -9,8 +9,8 @@ export class Mediator {
         this.eventEmitter.on(eventName, listener);
     }
 
-    async publish(aggregate_root: AgreggateRoot) {
-        const events = aggregate_root.events
+    async publish(aggregate: AgreggateRoot) {
+        const events = aggregate.events
         for (const event of events) {
             await this.eventEmitter.emitAsync(event.constructor.name);
         }
