@@ -2,7 +2,7 @@ import Customer from "../../../../domain/customer/entity/customer";
 import Address from "../../../../domain/customer/value-object/address";
 import CustomerRepositoryInterface from "../../../../domain/customer/repository/customer-repository.interface";
 import CustomerModel from "./customer.model";
-import { TransactionInterface } from "../../../../domain/@shared/domain/transaction.interface";
+import {TransactionInterface} from "../../../../domain/@shared/domain/transaction.interface";
 
 export default class CustomerRepository implements CustomerRepositoryInterface {
 
@@ -64,13 +64,12 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
     }
 
     const customer = new Customer(id, customerModel.name);
-    const address = new Address(
+    customer.Address = new Address(
       customerModel.street,
       customerModel.number,
       customerModel.zipcode,
       customerModel.city
     );
-    customer.changeAddress(address);
     return customer;
   }
 
@@ -79,22 +78,14 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
       transaction: this.transaction.getTransaction()
     });
 
-    const customers = customerModels.map((customerModels) => {
-      let customer = new Customer(customerModels.id, customerModels.name);
-      customer.addRewardPoints(customerModels.rewardPoints);
-      const address = new Address(
-        customerModels.street,
-        customerModels.number,
-        customerModels.zipcode,
-        customerModels.city
-      );
-      customer.changeAddress(address);
-      if (customerModels.active) {
+    return customerModels.map((model) => {
+      const customer = new Customer(model.id, model.name);
+      customer.addRewardPoints(model.rewardPoints);
+      customer.Address = new Address(model.street, model.number, model.zipcode, model.city);
+      if (model.active) {
         customer.activate();
       }
       return customer;
     });
-
-    return customers;
   }
 }

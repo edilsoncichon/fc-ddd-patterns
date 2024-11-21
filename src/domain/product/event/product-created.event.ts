@@ -1,11 +1,13 @@
 import EventInterface from "../../@shared/event/event.interface";
 
 export default class ProductCreatedEvent implements EventInterface {
+  aggregateId: string;
   dataTimeOccurred: Date;
-  eventData: any;
+  data: any;
 
-  constructor(eventData: any) {
+  constructor(aggregateId: string, data: any) {
+    this.data = data;
+    this.aggregateId = aggregateId;
     this.dataTimeOccurred = new Date();
-    this.eventData = eventData;
   }
 }

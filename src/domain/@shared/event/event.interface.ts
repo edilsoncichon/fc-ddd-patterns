@@ -1,4 +1,5 @@
 export default interface EventInterface {
+  aggregateId: string;
   dataTimeOccurred: Date;
-  eventData: any;
+  data: any;
 }

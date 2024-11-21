@@ -68,7 +68,7 @@ describe("Domain events tests", () => {
       eventDispatcher.getEventHandlers["ProductCreatedEvent"][0]
     ).toMatchObject(eventHandler);
 
-    const productCreatedEvent = new ProductCreatedEvent({
+    const productCreatedEvent = new ProductCreatedEvent("999", {
       name: "Product 1",
       description: "Product 1 description",
       price: 10.0,

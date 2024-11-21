@@ -1,19 +1,23 @@
-import  EventEmitter from 'eventemitter2'
-import { AgreggateRoot } from "../domain/aggregate-root"
+import {AgreggateRoot} from "../domain/aggregate-root"
+import EventDispatcher from "../event/event-dispatcher";
 
 export class Mediator {
 
-    eventEmitter: EventEmitter;
+  eventDispatcher: EventDispatcher;
 
-    register(eventName: string, listener: any) {
-        this.eventEmitter.on(eventName, listener);
+  constructor() {
+    this.eventDispatcher = new EventDispatcher();
+  }
+
+  register(eventName: string, handler: any) {
+    this.eventDispatcher.register(eventName, handler);
+  }
+
+  async publish(aggregate: AgreggateRoot) {
+    const events = aggregate.events
+    for (const event of events) {
+      this.eventDispatcher.notify(event);
     }
-
-    async publish(aggregate: AgreggateRoot) {
-        const events = aggregate.events
-        for (const event of events) {
-            await this.eventEmitter.emitAsync(event.constructor.name);
-        }
-    }
-
+    aggregate.clearEvents();
+  }
 }
